@@ -5,6 +5,9 @@ import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
+import sample_data from "./data/sample_data.txt";
+
+
 class Input extends React.Component {
   constructor(props) {
     super(props);
@@ -12,8 +15,10 @@ class Input extends React.Component {
       input: "",
     }
 
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
+    this.addSampleData = this.addSampleData.bind(this);
+    this.clearData = this.clearData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleTextFieldChange(event) {
@@ -22,6 +27,25 @@ class Input extends React.Component {
       input: event.target.value,
     });
   }
+
+  addSampleData(event) {
+    event.preventDefault();
+    fetch(sample_data)
+      .then(r => r.text())
+      .then(text => {
+        this.setState({
+          input: text
+        });
+      });
+  }
+
+  clearData(event) {
+    event.preventDefault();
+    this.setState({
+      input: ""
+    });
+  }
+
 
   handleSubmit(event) {
     event.preventDefault();
@@ -39,6 +63,7 @@ class Input extends React.Component {
     }, (error) => {
       console.log(error);
     });
+    this.clearData(event);
   }
 
   render () {
@@ -47,8 +72,10 @@ class Input extends React.Component {
         <h3>
           Input your file text here:
         </h3>
+        <Button variant="outlined" onClick={(e) => this.addSampleData(e)}>Add sample data</Button>
+        <Button variant="outlined" onClick={(e) => this.clearData(e)}>Clear data</Button>
         <>
-          <TextField label="Input text here!" multiline minRows={10} onChange={(e) => this.handleTextFieldChange(e)} />
+          <TextField label="Input text here!" multiline minRows={15} maxRows={15} onChange={(e) => this.handleTextFieldChange(e)} value={this.state.input} />
           <Button variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
         </>
       </div>
