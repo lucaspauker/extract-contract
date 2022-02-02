@@ -1,12 +1,28 @@
 import React from "react"
 import "./Input.scss";
 import axios from "axios";
+import * as pdfjsLib from "pdfjs-dist";
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import sample_data from "./data/sample_data.txt";
 
+async function getPdfText(pdf) {
+  //const pdf = await pdfjsLib.getDocument(path);
+  const pagePromises = [];
+  for (let j = 1; j <= pdf.numPages; j++) {
+    const page = pdf.getPage(j);
+    pagePromises.push(page.then((page) => {
+      const textContent = page.getTextContent();
+      return textContent.then((text) => {
+        return text.items.map((s) =>  s.str).join('');
+      });
+    }));
+  }
+  const texts = await Promise.all(pagePromises);
+  return texts.join('');
+}
 
 class Input extends React.Component {
   constructor(props) {
@@ -19,6 +35,7 @@ class Input extends React.Component {
     this.addSampleData = this.addSampleData.bind(this);
     this.clearData = this.clearData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.processPDF = this.processPDF.bind(this);
   }
 
   handleTextFieldChange(event) {
@@ -66,18 +83,47 @@ class Input extends React.Component {
     this.clearData(event);
   }
 
+  processPDF(event) {
+    event.preventDefault();
+    var file = event.target.files[0];
+    var fileReader = new FileReader();
+    var pdfText = "";
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.js";
+    var that = this;
+    fileReader.onload = function() {
+      var typedArray = new Uint8Array(this.result);
+
+      pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
+        console.log("The pdf has " + pdf.numPages + " pages.")
+        getPdfText(pdf).then(function(text) {
+          this.setState({
+            input: text
+          });
+        }.bind(this));
+      }.bind(that));
+    };
+    fileReader.readAsArrayBuffer(file);
+
+    console.log(pdfText);
+  }
+
   render () {
     return (
       <div id="input">
         <h3>
           Input your file text here:
         </h3>
-        <Button variant="outlined" onClick={(e) => this.addSampleData(e)}>Add sample data</Button>
-        <Button variant="outlined" onClick={(e) => this.clearData(e)}>Clear data</Button>
-        <>
-          <TextField label="Input text here!" multiline minRows={15} maxRows={15} onChange={(e) => this.handleTextFieldChange(e)} value={this.state.input} />
-          <Button variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
-        </>
+        <div className="button-area">
+          <Button variant="outlined" onClick={(e) => this.addSampleData(e)}>Add sample data</Button>
+          <Button variant="outlined" component="label">
+            Upload PDF File
+            <input type="file" accept=".pdf" onChange={(e) => this.processPDF(e)}hidden/>
+          </Button>
+          <Button variant="outlined" onClick={(e) => this.clearData(e)}>Clear data</Button>
+        </div>
+        <TextField label="Input text here!" multiline minRows={15} maxRows={15} onChange={(e) => this.handleTextFieldChange(e)} value={this.state.input} />
+        <Button variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
       </div>
     );
   }
