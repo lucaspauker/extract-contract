@@ -131,7 +131,7 @@ def run_prediction(question_texts, context_text, model_path):
     return final_predictions
 
 
-@app.route("predict", methods=["POST"])
+@app.route("/predict", methods=["POST"])
 def predict():
     if request.method == "POST":
         contract_text = request.get_json()["input"]
