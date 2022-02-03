@@ -136,7 +136,7 @@ def predict():
     if request.method == "POST":
         contract_text = request.get_json()["input"]
         preds = run_prediction(questions, contract_text, model_path)
-        return jsonify({questions[0]: list(preds.items())[0][1]})
+        return jsonify({"result": list(preds.items())[0][1]})
 
 if __name__ == '__main__':
     app.run()

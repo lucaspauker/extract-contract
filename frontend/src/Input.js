@@ -77,9 +77,9 @@ class Input extends React.Component {
     })
     .then((response) => {
       this.setState({
-        input: response.data.message
+        input: response.data.result
       });
-      console.log(response);
+      console.log(response.data.result);
     }, (error) => {
       console.log(error);
     });
