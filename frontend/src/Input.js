@@ -70,13 +70,16 @@ class Input extends React.Component {
 
     axios({
       method: "post",
-      url: "/dummy_predict",
+      url: "/predict",
       data: {
         input: this.state.input,
       }
     })
     .then((response) => {
-      console.log(response.data);
+      this.setState({
+        input: response.data.message
+      });
+      console.log(response);
     }, (error) => {
       console.log(error);
     });
