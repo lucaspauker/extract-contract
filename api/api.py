@@ -17,8 +17,32 @@ from transformers.data.processors.squad import squad_convert_examples_to_feature
 app = Flask(__name__)
 
 questions = ['Highlight the parts (if any) of this contract related to "Document Name" \
-that should be reviewed by a lawyer. Details: The name of the contract']
+            that should be reviewed by a lawyer. Details: The name of the contract',
+            'Highlight the parts (if any) of this contract related to "Parties" that should \
+            be reviewed by a lawyer. Details: The two or more parties who signed the contract',
+            'Highlight the parts (if any) of this contract related to "Governing Law" that should \
+                be reviewed by a lawyer. Details: Which state/country\'s law governs the interpretation of the contract?',
+            'Highlight the parts (if any) of this contract related to "Agreement Date" that should \
+                be reviewed by a lawyer. Details: The date of the contract',
+            'Highlight the parts (if any) of this contract related to "Expiration Date" that should \
+                be reviewed by a lawyer. Details: On what date will the contract\'s initial term expire?']
+
+question_categories = ['Document name', 'Parties', 'Governing Law', 'Agreement Date', 'Expiration Date']
+
 model_path = os.path.join(os.getcwd(), 'models/roberta-base')
+
+config_class, model_class, tokenizer_class = (
+        AutoConfig, AutoModelForQuestionAnswering, AutoTokenizer)
+
+config = config_class.from_pretrained(model_path)
+
+tokenizer = tokenizer_class.from_pretrained(
+        model_path, do_lower_case=True, use_fast=False)
+
+model = model_class.from_pretrained(model_path, config=config)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
 def to_list(tensor):
     return tensor.detach().cpu().tolist()
@@ -27,7 +51,7 @@ def to_list(tensor):
 # in the future.
 
 # Extract questions for a single contract
-def run_prediction(question_texts, context_text, model_path):
+def run_prediction(question_texts, context_text, model, tokenizer):
     
     ### Setting hyperparameters, need to understand what some of these are doing
     
@@ -41,19 +65,6 @@ def run_prediction(question_texts, context_text, model_path):
 
     # model_name_or_path = "../cuad-models/roberta-base/"
 
-
-    config_class, model_class, tokenizer_class = (
-        AutoConfig, AutoModelForQuestionAnswering, AutoTokenizer)
-
-    config = config_class.from_pretrained(model_path)
-
-    tokenizer = tokenizer_class.from_pretrained(
-        model_path, do_lower_case=True, use_fast=False)
-
-    model = model_class.from_pretrained(model_path, config=config)
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
 
     processor = SquadV2Processor()
     examples = []
@@ -135,8 +146,12 @@ def run_prediction(question_texts, context_text, model_path):
 def predict():
     if request.method == "POST":
         contract_text = request.get_json()["input"]
-        preds = run_prediction(questions, contract_text, model_path)
-        return jsonify({"result": list(preds.items())[0][1]})
+        preds = run_prediction(questions, contract_text, model, tokenizer)
+        answer_dict = preds.items()
+        qa_list = []
+        for i in range(len(preds)): 
+            qa_list.append((question_categories[i], preds[str(i)]))
+        return jsonify({"result": qa_list})
 
 if __name__ == '__main__':
     app.run()
