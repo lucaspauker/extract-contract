@@ -5,6 +5,14 @@
 ```
 conda env create -f api/env.yml
 ```
+### Update conda env
+```
+conda env update --file local.yml --prune
+```
+### Update frotend packages
+```
+npm install
+```
 ### Run frontend server
 ```
 cd frontend
@@ -15,8 +23,7 @@ npm start
 cd api
 flask run
 ```
-
 ## Do this before committing
 ```
-conda env export > api/env.yml
+conda env export --no-builds > env.yml
 ```
