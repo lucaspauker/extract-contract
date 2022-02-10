@@ -5,8 +5,45 @@ import * as pdfjsLib from "pdfjs-dist";
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+
+import CircularProgress from '@mui/material/CircularProgress';
 
 import sample_data from "./data/sample_data.txt";
+
+function returnOutput(data) {
+  return  <div id="output">
+            <h3>Results</h3>
+            <TableContainer>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">Category</TableCell>
+                    <TableCell align="center">Output</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data.map((data) => (
+                    <TableRow
+                      key={data[0]}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
+                      <TableCell align="center">{data[0]}</TableCell>
+                      <TableCell align="center">{data[1]}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Button variant="contained">Download Data</Button>
+          </div>
+}
 
 async function getPdfText(pdf) {
   //const pdf = await pdfjsLib.getDocument(path);
@@ -29,6 +66,8 @@ class Input extends React.Component {
     super(props);
     this.state = {
       input: "",
+      data: null,
+      loading: false,
     }
 
     this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
@@ -66,7 +105,10 @@ class Input extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log(this.state.input);
+    this.setState({
+      loading: true,
+      data: "",
+    });
 
     axios({
       method: "post",
@@ -77,9 +119,9 @@ class Input extends React.Component {
     })
     .then((response) => {
       this.setState({
-        input: response.data.result
+        data: response.data.result,
+        loading: false,
       });
-      console.log(response.data.result);
     }, (error) => {
       console.log(error);
     });
@@ -90,7 +132,6 @@ class Input extends React.Component {
     event.preventDefault();
     var file = event.target.files[0];
     var fileReader = new FileReader();
-    var pdfText = "";
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.js";
     var that = this;
@@ -107,26 +148,34 @@ class Input extends React.Component {
       }.bind(that));
     };
     fileReader.readAsArrayBuffer(file);
-
-    console.log(pdfText);
   }
 
   render () {
+    let output = "";
+    if (this.state.data) {
+      output = <>
+                <Divider />
+                {returnOutput(this.state.data)}
+               </>
+    } else if (this.state.loading) {
+      output = <>
+                <Divider />
+                <CircularProgress />
+               </>
+    }
     return (
       <div id="input">
-        <h3>
-          Input your file text here:
-        </h3>
         <div className="button-area">
           <Button variant="outlined" onClick={(e) => this.addSampleData(e)}>Add sample data</Button>
           <Button variant="outlined" component="label">
             Upload PDF File
-            <input type="file" accept=".pdf" onChange={(e) => this.processPDF(e)}hidden/>
+            <input type="file" accept=".pdf" onChange={(e) => this.processPDF(e)} hidden/>
           </Button>
           <Button variant="outlined" onClick={(e) => this.clearData(e)}>Clear data</Button>
         </div>
         <TextField label="Input text here!" multiline minRows={15} maxRows={15} onChange={(e) => this.handleTextFieldChange(e)} value={this.state.input} />
-        <Button variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
+        <Button id="process-button" variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
+        {output}
       </div>
     );
   }
