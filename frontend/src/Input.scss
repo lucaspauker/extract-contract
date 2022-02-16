@@ -28,6 +28,30 @@
 #output {
   margin-bottom: 50px;
 
+  .qa {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+
+    .MuiFormControl-root {
+      width: 50%;
+    }
+
+    .MuiInputBase-root {
+      margin: 0px;
+    }
+
+    .qa-text {
+      padding: 10px 0px;
+    }
+
+    .qa-questions {
+      width: 50%;
+      padding: 0px;
+      margin: 0px;
+    }
+  }
+
   th, td {
     width: 50%;
   }

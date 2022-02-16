@@ -18,35 +18,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import sample_data from "./data/sample_data.txt";
 
-function returnOutput(data) {
-  return  <div id="output">
-            <h3>Results</h3>
-            <TableContainer>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center">Category</TableCell>
-                    <TableCell align="center">Output</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data.map((data) => (
-                    <TableRow
-                      key={data[0]}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
-                      <TableCell align="center">{data[0]}</TableCell>
-                      <TableCell align="center">{data[1]}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Button variant="contained">Download Data</Button>
-          </div>
-}
-
 async function getPdfText(pdf) {
-  //const pdf = await pdfjsLib.getDocument(path);
   const pagePromises = [];
   for (let j = 1; j <= pdf.numPages; j++) {
     const page = pdf.getPage(j);
@@ -66,6 +38,7 @@ class Input extends React.Component {
     super(props);
     this.state = {
       input: "",
+      oldInput: "",
       data: null,
       loading: false,
     }
@@ -75,6 +48,69 @@ class Input extends React.Component {
     this.clearData = this.clearData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.processPDF = this.processPDF.bind(this);
+    this.returnOutput = this.returnOutput.bind(this);
+    this.downloadData = this.downloadData.bind(this);
+  }
+
+  downloadData(event, data) {
+    event.preventDefault();
+    let csvContent = "data:text/csv;charset=utf-8,";
+
+    data.forEach(function(rowArray) {
+      let row = rowArray.join(",");
+      csvContent += row + "\r\n";
+    });
+
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "data.csv");
+    document.body.appendChild(link);
+    link.click();
+  }
+
+  returnOutput(data) {
+    return  <div id="output">
+              <h3>Results</h3>
+              <TableContainer>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">Category</TableCell>
+                      <TableCell align="center">Output</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data.map((data) => (
+                      <TableRow
+                        key={data[0]}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 }}}>
+                        <TableCell align="center">{data[0]}</TableCell>
+                        <TableCell align="center">{data[1]}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Button variant="contained" onClick={(e) => this.downloadData(e, data)}>Download Data</Button>
+            </div>
+  }
+
+  returnPrettyOutput(text, data) {
+    let paragraphs = text.split(/\r?\n/);
+    paragraphs = paragraphs.filter(p => p.length > 0);
+    return  <div id="output">
+              <h3>Results</h3>
+              {paragraphs.map((p, i) => (
+                <div className="qa" key={i}>
+                  <TextField className="qa-text" multiline id="outlined-basic" label="" variant="outlined" value={p} />
+                  <div className="qa-questions">
+                    <p>foo</p>
+                  </div>
+                </div>
+              ))}
+              <Button variant="contained" onClick={(e) => this.downloadData(e, data)}>Download Data</Button>
+            </div>
   }
 
   handleTextFieldChange(event) {
@@ -98,7 +134,8 @@ class Input extends React.Component {
   clearData(event) {
     event.preventDefault();
     this.setState({
-      input: ""
+      oldInput: this.state.input,
+      input: "",
     });
   }
 
@@ -130,13 +167,13 @@ class Input extends React.Component {
 
   processPDF(event) {
     event.preventDefault();
-    var file = event.target.files[0];
-    var fileReader = new FileReader();
+    let file = event.target.files[0];
+    let fileReader = new FileReader();
 
     pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.js";
-    var that = this;
+    let that = this;
     fileReader.onload = function() {
-      var typedArray = new Uint8Array(this.result);
+      let typedArray = new Uint8Array(this.result);
 
       pdfjsLib.getDocument(typedArray).promise.then(function(pdf) {
         console.log("The pdf has " + pdf.numPages + " pages.")
@@ -155,7 +192,7 @@ class Input extends React.Component {
     if (this.state.data) {
       output = <>
                 <Divider />
-                {returnOutput(this.state.data)}
+                {this.returnPrettyOutput(this.state.oldInput, this.state.data)}
                </>
     } else if (this.state.loading) {
       output = <>
