@@ -1,6 +1,7 @@
 #input {
   padding: 0px 50px;
-  max-width: 1000px;
+  max-width: 1200px;
+  margin: 50px auto;
 
   .MuiFormControl-root {
     width: 100%;
@@ -13,54 +14,13 @@
   .button-area {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
-  }
-
-  .MuiCircularProgress-root {
-    margin-top: 50px;
   }
 
   #process-button {
-    margin-bottom: 50px;
   }
 }
 
-#output {
-  margin-bottom: 50px;
-
-  .qa {
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-
-    .MuiFormControl-root {
-      width: 50%;
-    }
-
-    .MuiInputBase-root {
-      margin: 0px;
-    }
-
-    .qa-text {
-      padding: 10px 0px;
-    }
-
-    .qa-questions {
-      width: 50%;
-      padding: 0px;
-      margin: 0px;
-    }
-  }
-
-  th, td {
-    width: 50%;
-  }
-
-  th {
-    font-weight: bold;
-  }
-
-  h3 {
-    margin: 50px 0px 10px 0px;
-  }
+.MuiCircularProgress-root {
+  margin-top: 50px;
 }
+

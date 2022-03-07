@@ -1,12 +1,23 @@
 import React from "react"
 import "./Header.scss";
+import AppBar from '@mui/material/AppBar';
+import Typography from '@mui/material/Typography';
+import Toolbar from '@mui/material/Toolbar';
 
 class Input extends React.Component {
   render () {
     return (
       <div id="header">
-        <h1>Contract Extractor</h1>
-        <h2>Beri Kohen, Lucas Pauker, Shashank Rammoorthy</h2>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h4">
+              Contract Extractor
+            </Typography>
+            <Typography variant="h6">
+              Beri Kohen, Lucas Pauker, Shashank Rammoorthy
+            </Typography>
+          </Toolbar>
+        </AppBar>
       </div>
     );
   }

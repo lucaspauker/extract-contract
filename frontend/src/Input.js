@@ -18,6 +18,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import sample_data from "./data/sample_data.txt";
 
+import Output from "./Output.js";
+
 async function getPdfText(pdf) {
   const pagePromises = [];
   for (let j = 1; j <= pdf.numPages; j++) {
@@ -49,24 +51,6 @@ class Input extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.processPDF = this.processPDF.bind(this);
     this.returnOutput = this.returnOutput.bind(this);
-    this.downloadData = this.downloadData.bind(this);
-  }
-
-  downloadData(event, data) {
-    event.preventDefault();
-    let csvContent = "data:text/csv;charset=utf-8,";
-
-    data.forEach(function(rowArray) {
-      let row = rowArray.join(",");
-      csvContent += row + "\r\n";
-    });
-
-    let encodedUri = encodeURI(csvContent);
-    let link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "data.csv");
-    document.body.appendChild(link);
-    link.click();
   }
 
   returnOutput(data) {
@@ -92,23 +76,6 @@ class Input extends React.Component {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Button variant="contained" onClick={(e) => this.downloadData(e, data)}>Download Data</Button>
-            </div>
-  }
-
-  returnPrettyOutput(text, data) {
-    let paragraphs = text.split(/\r?\n/);
-    paragraphs = paragraphs.filter(p => p.length > 0);
-    return  <div id="output">
-              <h3>Results</h3>
-              {paragraphs.map((p, i) => (
-                <div className="qa" key={i}>
-                  <TextField className="qa-text" multiline id="outlined-basic" label="" variant="outlined" value={p} />
-                  <div className="qa-questions">
-                    <p>foo</p>
-                  </div>
-                </div>
-              ))}
               <Button variant="contained" onClick={(e) => this.downloadData(e, data)}>Download Data</Button>
             </div>
   }
@@ -187,12 +154,19 @@ class Input extends React.Component {
     fileReader.readAsArrayBuffer(file);
   }
 
+  componentDidUpdate(prevProps) {
+    const outElem = document.getElementById("output");
+    if (outElem) {
+      outElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   render () {
     let output = "";
     if (this.state.data) {
       output = <>
                 <Divider />
-                {this.returnPrettyOutput(this.state.oldInput, this.state.data)}
+                <Output text={this.state.oldInput} data={this.state.data} />
                </>
     } else if (this.state.loading) {
       output = <>
@@ -201,19 +175,21 @@ class Input extends React.Component {
                </>
     }
     return (
-      <div id="input">
-        <div className="button-area">
-          <Button variant="outlined" onClick={(e) => this.addSampleData(e)}>Add sample data</Button>
-          <Button variant="outlined" component="label">
-            Upload PDF File
-            <input type="file" accept=".pdf" onChange={(e) => this.processPDF(e)} hidden/>
-          </Button>
-          <Button variant="outlined" onClick={(e) => this.clearData(e)}>Clear data</Button>
+      <>
+        <div id="input">
+          <div className="button-area">
+            <Button variant="outlined" onClick={(e) => this.addSampleData(e)}>Add sample data</Button>
+            <Button variant="outlined" component="label">
+              Upload PDF File
+              <input type="file" accept=".pdf" onChange={(e) => this.processPDF(e)} hidden/>
+            </Button>
+            <Button variant="outlined" onClick={(e) => this.clearData(e)}>Clear data</Button>
+          </div>
+          <TextField label="Input text here!" multiline minRows={15} maxRows={15} onChange={(e) => this.handleTextFieldChange(e)} value={this.state.input} />
+          <Button id="process-button" variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
         </div>
-        <TextField label="Input text here!" multiline minRows={15} maxRows={15} onChange={(e) => this.handleTextFieldChange(e)} value={this.state.input} />
-        <Button id="process-button" variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
         {output}
-      </div>
+      </>
     );
   }
 }

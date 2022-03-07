@@ -1,7 +1,10 @@
+html {
+  scroll-behavior: smooth;
+}
+
 #app {
   width: 100%;
-  max-width: 1000px;
-  margin: 0px auto;
+  margin: 0px;
   text-align: center;
   font-family: 'Roboto', sans-serif;
 }
