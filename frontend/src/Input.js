@@ -154,9 +154,9 @@ class Input extends React.Component {
     fileReader.readAsArrayBuffer(file);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const outElem = document.getElementById("output");
-    if (outElem) {
+    if (!prevState.data && outElem) {
       outElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
@@ -188,7 +188,9 @@ class Input extends React.Component {
           <TextField label="Input text here!" multiline minRows={15} maxRows={15} onChange={(e) => this.handleTextFieldChange(e)} value={this.state.input} />
           <Button id="process-button" variant="contained" onClick={(e) => this.handleSubmit(e)}>Process</Button>
         </div>
-        {output}
+        <div id="output">
+          {output}
+        </div>
       </>
     );
   }

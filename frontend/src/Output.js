@@ -85,7 +85,7 @@ class Output extends React.Component {
 
   render () {
     return (
-      <div id="output">
+      <>
         <Typography variant="h4">
           Results
         </Typography>
@@ -110,7 +110,7 @@ class Output extends React.Component {
           </div>
         ))}
         <Button variant="contained" onClick={(e) => this.downloadData(e, this.state.data)}>Download Data</Button>
-      </div>
+      </>
     );
   }
 }
