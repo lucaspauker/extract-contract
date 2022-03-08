@@ -21,6 +21,7 @@ class Output extends React.Component {
     let data_indices_dict = {};
     for (let i=0; i<paragraphs.length; i++) {
       for (let j=0; j<data.length; j++) {
+        if (data[j][1].length === 0) { continue }
         if (paragraphs[i].includes(data[j][1])) {
           let start_index = paragraphs[i].indexOf(data[j][1]);
           let end_index = start_index + data[j][1].length;
