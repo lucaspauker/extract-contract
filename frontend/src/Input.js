@@ -51,6 +51,7 @@ class Input extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.processPDF = this.processPDF.bind(this);
     this.returnOutput = this.returnOutput.bind(this);
+    this.clearResults = this.clearResults.bind(this);
   }
 
   returnOutput(data) {
@@ -103,6 +104,14 @@ class Input extends React.Component {
     this.setState({
       oldInput: this.state.input,
       input: "",
+    });
+  }
+
+  clearResults(event) {
+    event.preventDefault();
+    this.setState({
+      loading: false,
+      data: "",
     });
   }
 
@@ -166,7 +175,7 @@ class Input extends React.Component {
     if (this.state.data) {
       output = <>
                 <Divider />
-                <Output text={this.state.oldInput} data={this.state.data} />
+                <Output text={this.state.oldInput} data={this.state.data} clearResults={this.clearResults} />
                </>
     } else if (this.state.loading) {
       output = <>

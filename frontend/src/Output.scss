@@ -6,7 +6,7 @@
   margin: 0px auto;
 
   button {
-    margin: 0px 0px 50px 0px;
+    margin: 0px 10px 50px 10px;
   }
 
   .qa {
@@ -15,10 +15,27 @@
     justify-content: space-evenly;
     margin-top: 30px;
 
+    .qa-text-container {
+      width: 50%;
+    }
+
+    .paragraph-num {
+      text-align: left;
+      padding-left: 10px;
+      margin-bottom: -28px;
+      position: relative;
+
+      p {
+        background-color: white;
+        display: inline-block;
+        padding: 0px 5px;
+        font-size: 12px;
+      }
+    }
+
     .qa-text {
       box-sizing: border-box;
       text-align: left;
-      width: 50%;
       padding: 10px;
       border-radius: 5px;
       border: 1px solid #c62828;

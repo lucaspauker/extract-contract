@@ -18,6 +18,7 @@ class Output extends React.Component {
     // Also make dict of paragraph to queston/answers
     let filtered_paragraphs = [];
     let filtered_paragraphs_list = [];
+    let paragraph_inds = []
     let data_indices_dict = {};
     for (let i=0; i<paragraphs.length; i++) {
       for (let j=0; j<data.length; j++) {
@@ -33,6 +34,7 @@ class Output extends React.Component {
           } else {
             filtered_paragraphs.push(paragraphs[i]);
             filtered_paragraphs_list.push([data_arr]);
+            paragraph_inds.push(i);
           }
         }
       }
@@ -41,6 +43,7 @@ class Output extends React.Component {
     this.state = {
       filtered_paragraphs: filtered_paragraphs,
       filtered_paragraphs_list: filtered_paragraphs_list,
+      paragraph_inds: paragraph_inds,
       data: data,
       data_indices_dict: data_indices_dict,
     }
@@ -91,10 +94,15 @@ class Output extends React.Component {
         </Typography>
         {this.state.filtered_paragraphs.map((p, i) => (
           <div className="qa" key={i}>
-            <div className="qa-text">
-              <Typography variant="body1"
-                dangerouslySetInnerHTML={{__html: p}}
-              />
+            <div className="qa-text-container">
+              <div className="paragraph-num">
+                <p>(Paragraph {this.state.paragraph_inds[i]})</p>
+              </div>
+              <div className="qa-text">
+                <Typography variant="body1"
+                  dangerouslySetInnerHTML={{__html: p}}
+                />
+              </div>
             </div>
             <div className="qa-questions" key={i}>
               {this.state.filtered_paragraphs_list[i].map((q, j) => (
@@ -110,6 +118,7 @@ class Output extends React.Component {
           </div>
         ))}
         <Button variant="contained" onClick={(e) => this.downloadData(e, this.state.data)}>Download Data</Button>
+        <Button variant="contained" onClick={(e) => this.props.clearResults(e)}>Clear Results</Button>
       </>
     );
   }
