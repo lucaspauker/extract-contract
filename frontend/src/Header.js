@@ -3,6 +3,7 @@ import "./Header.scss";
 import AppBar from '@mui/material/AppBar';
 import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar';
+import { GiEagleEmblem } from 'react-icons/gi';
 
 class Input extends React.Component {
   render () {
@@ -11,7 +12,7 @@ class Input extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h4">
-              Contract Extractor
+              <GiEagleEmblem /> LegalEagle Contract Extractor
             </Typography>
             <Typography variant="h6">
               Beri Kohen, Lucas Pauker, Shashank Rammoorthy
