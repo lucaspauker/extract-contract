@@ -27,13 +27,25 @@ class Text extends React.Component {
               }}
               onInit={(typewriter) => {
                 typewriter
-                .typeString("fast")
+                .typeString("quickly")
                 .pauseFor(1000)
                 .deleteAll()
                 .typeString("accurately")
                 .pauseFor(1000)
                 .deleteAll()
+                .typeString("smoothly")
+                .pauseFor(1000)
+                .deleteAll()
+                .typeString("magically")
+                .pauseFor(1000)
+                .deleteAll()
+                .typeString("diligently")
+                .pauseFor(1000)
+                .deleteAll()
                 .typeString("efficiently")
+                .pauseFor(1000)
+                .deleteAll()
+                .typeString("adeptly")
                 .start();
                 }}
              />
