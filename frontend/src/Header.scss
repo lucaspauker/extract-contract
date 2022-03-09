@@ -4,8 +4,13 @@
     max-width: 1200px;
     margin: 0px auto;
     padding: 0px 50px;
+    padding-top: 10px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+  }
+
+  img {
+    width: 60px;
+    margin-right: 20px;
   }
 }

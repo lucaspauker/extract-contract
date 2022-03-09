@@ -96,7 +96,7 @@ class Output extends React.Component {
           <div className="qa" key={i}>
             <div className="qa-text-container">
               <div className="paragraph-num">
-                <p>(Paragraph {this.state.paragraph_inds[i] + 1})</p>
+                <p>Paragraph {this.state.paragraph_inds[i] + 1}</p>
               </div>
               <div className="qa-text">
                 <Typography variant="body1"

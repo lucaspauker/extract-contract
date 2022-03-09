@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
 
+import Text from "./Text.js"
 import Input from "./Input.js"
 import Header from "./Header.js"
 
@@ -16,9 +17,9 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     secondary: {
-      light: '#fff263',
-      main: '#fbc02d',
-      dark: '#c49000',
+      light: '#ffe97d',
+      main: '#ffb74d',
+      dark: '#c88719',
       contrastText: '#000',
     },
   },
@@ -29,6 +30,7 @@ function App() {
     <div id="app">
       <ThemeProvider theme={theme}>
         <Header />
+        <Text />
         <Input />
       </ThemeProvider>
     </div>

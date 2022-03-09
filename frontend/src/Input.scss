@@ -7,16 +7,16 @@
     width: 100%;
   }
 
-  button, label {
+  button {
     margin: 10px;
   }
 
   .button-area {
     display: flex;
     justify-content: center;
-  }
-
-  #process-button {
+    label {
+      margin: 10px;
+    }
   }
 }
 

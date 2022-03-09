@@ -1,0 +1,30 @@
+#text {
+  padding: 0px 50px;
+  color: white;
+  background-color: #c62828;
+
+  #text-inner {
+    max-width: 1200px;
+    margin: 0px auto;
+  }
+
+  h2 {
+    max-width: 800px;
+    margin: 0px auto;
+    padding: 180px 0px 20px 0px;
+  }
+
+  h6 {
+    max-width: 800px;
+    margin: 0px auto;
+    padding: 10px 0px 180px 0px;
+  }
+
+  svg {
+    height: 25px;
+    width: 25px;
+    margin: 0px 0px 40px 0px;
+    cursor: pointer;
+  }
+}
+

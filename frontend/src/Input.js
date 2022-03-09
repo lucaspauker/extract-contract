@@ -22,12 +22,15 @@ import Output from "./Output.js";
 
 async function getPdfText(pdf) {
   const pagePromises = [];
+  let lastY = -1;
   for (let j = 1; j <= pdf.numPages; j++) {
     const page = pdf.getPage(j);
     pagePromises.push(page.then((page) => {
       const textContent = page.getTextContent();
       return textContent.then((text) => {
-        return text.items.map((s) =>  s.str).join('');
+        return text.items.map((s) => {
+          return s.str;
+        }).join('');
       });
     }));
   }

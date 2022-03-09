@@ -8,13 +8,11 @@ class Input extends React.Component {
   render () {
     return (
       <div id="header">
-        <AppBar position="static">
+        <AppBar position="static" elevation={0}>
           <Toolbar>
+            <img src="eagle_head.svg" alt="Eagle Head" />
             <Typography variant="h4">
-              Contract Extractor
-            </Typography>
-            <Typography variant="h6">
-              Beri Kohen, Lucas Pauker, Shashank Rammoorthy
+              Legal<b>Eagle</b>
             </Typography>
           </Toolbar>
         </AppBar>
