@@ -22,7 +22,7 @@ The model is loaded into the GPU’s memory when the inference process is first 
 As an aside, we also uploaded our model to HuggingFace and tried to use their accelerated inference API. This seemed like an appealing method because all the computation including most of the preprocessing of data is handled by HuggingFace, but due to unforeseen issues we were not able to go down this path.  
 
 ## Machine Learning Component
-<img src="images/cuad_contract_len.png" width="300" align="right">
+<img src="images/cuad_contract_len.png" width="400" align="right">
 
 ### Dataset
 The data for our model comes from the [Contract Understanding Atticus Dataset](https://www.google.com/url?q=https://www.atticusprojectai.org/cuad&sa=D&source=editors&ust=1646982401365960&usg=AOvVaw3n_h3WhrORwlQEzBSiwpnU) (CUAD), which is a dataset developed by the Atticus Project, a non-profit organization in the legal space. The dataset has over 500 contracts and more than 13,000 expert annotations that span 41 label categories. Using this dataset allowed us to effectively build a model to highlight important clauses in legal contracts.
@@ -31,13 +31,17 @@ Notably, a key insight of the authors was to structure the dataset in the same m
 
 ### Task Definition
 As mentioned earlier, there are 41 label categories in the dataset. The task at hand is effectively extractive question-answering. That is, given a question and a passage, the task of the model is to output start and end token indices of a span of text that relates most to the question. The model can also choose not to output any answers for a question. This is important because it is common for contracts to not have information about all 41 label categories. Intuitively, the model learns how to highlight important parts of a contract as lawyers do. Below is an illustration of some example labels from Hendrycks et al:
-![Labels](images/labels.png)
+<p align="center">
+  <img src="images/labels.png" width="700">
+</p>)
 
 ### Architecture & Training
 The authors of the [CUAD paper](https://www.google.com/url?q=https://arxiv.org/pdf/2103.06268.pdf&sa=D&source=editors&ust=1646982401367526&usg=AOvVaw2cwm0ryYBKz78BDlEoV186) demonstrate that NLP transformer models can achieve reasonable performance on the CUAD dataset. They use several pre-trained language models using the HuggingFace Transformers library, and fine tune these models on the CUAD dataset.
 
 We used the publicly available [code](https://www.google.com/url?q=https://github.com/TheAtticusProject/cuad&sa=D&source=editors&ust=1646982401367994&usg=AOvVaw2MRzOk441c0Xl_VMflXpc6) the authors provide to train and evaluate RoBERTa-base and replicated their performance metrics. Below is a Precision-Recall graph from the paper, note how the auPR statistics vary with smaller and larger models.
-![CUAD precision recall curve](images/cuad_pr_curve.png)
+<p align="center">
+  <img src="images/cuad_pr_curve.png" width="500">
+</p>
 
 ### Improving the Model
 
@@ -46,8 +50,12 @@ Since the authors already used the state of the art NLP transformer models, we d
 A classic transformer such as BERT typically treats domain-specific words as rare tokens. While this does not imply that the model will produce meaningless results (it had reasonable performance as shown above), it does mean that a better pre-trained model that is better suited for representing legal domain language could be used. Therefore, we propose running the supervised fine-tuning on [LegalBERT](https://www.google.com/url?q=https://huggingface.co/nlpaueb/legal-bert-base-uncased&sa=D&source=editors&ust=1646982401369123&usg=AOvVaw3f9QGoRkv_2Cz0OMLMvrc7) models, a family of transformers that are pre-trained on English contracts.
 
 Below is a masked language modeling example from HuggingFace’s page for LegalBERT that demonstrates that the LegalBERT models seem to learn a better representation of the legal domain compared to standard BERT models:
-![LegalBERT results](images/legal_bert.png)
-![LegalBERT results continued](images/legal_bert2.png)
+<p align="center">
+  <img src="images/legal_bert.png" width="500">
+</p>
+<p align="center">
+  <img src="images/legal_bert2.png" width="500">
+</p>
 
 ## System Evaluation
 We replicated the training and evaluation process of the authors to show that fine tuning on RoBERTa-base reaches an Area Under the Precision Recall Curve of 42.6, and Precision at 80 Percent Recall of 31.1 percent. “Precision @ x % recall” metrics are useful because high recall is a requirement for the usefulness of the application, while higher precision improves user experience.
@@ -66,9 +74,20 @@ Our application is very simple to use. It lets the user input a legal document, 
 
 The output of the model pops below the text box, and the user can scroll through the annotations. We group the annotations by the paragraph they appear in, and only display paragraphs that have at least one annotation. When the user hovers over the question (on the right side), they can see the corresponding answer highlighted on the left. Finally, the user can export the results as a CSV file.
 
-![Landing page](images/landing_page.gif)
-![Input](images/input.gif)
-![Results](images/results.gif)
+Below are some GIFs of the app. Here is the landing page:
+<p align="center">
+  <img src="images/landing_page.gif" width="500">
+</p>
+
+Here is the input interface:
+<p align="center">
+  <img src="images/input.gif" width="500">
+</p>
+
+Here is the results screen:
+<p align="center">
+  <img src="images/results.gif" width="500">
+</p>
 
 ## Reflection
 ### What Worked
