@@ -33,7 +33,7 @@ Notably, a key insight of the authors was to structure the dataset in the same m
 As mentioned earlier, there are 41 label categories in the dataset. The task at hand is effectively extractive question-answering. That is, given a question and a passage, the task of the model is to output start and end token indices of a span of text that relates most to the question. The model can also choose not to output any answers for a question. This is important because it is common for contracts to not have information about all 41 label categories. Intuitively, the model learns how to highlight important parts of a contract as lawyers do. Below is an illustration of some example labels from Hendrycks et al:
 <p align="center">
   <img src="images/labels.png" width="700">
-</p>)
+</p>
 
 ### Architecture & Training
 The authors of the [CUAD paper](https://www.google.com/url?q=https://arxiv.org/pdf/2103.06268.pdf&sa=D&source=editors&ust=1646982401367526&usg=AOvVaw2cwm0ryYBKz78BDlEoV186) demonstrate that NLP transformer models can achieve reasonable performance on the CUAD dataset. They use several pre-trained language models using the HuggingFace Transformers library, and fine tune these models on the CUAD dataset.
